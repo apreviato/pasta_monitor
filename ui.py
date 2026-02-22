@@ -21,7 +21,7 @@ _C = {
     # Backgrounds
     "bg":          "#FAFAFA",
     "sidebar":     "#F0F2F5",
-    "header":      "#1C1C2E",
+    "header":      "#0E0C0D",
     "toolbar":     "#F5F6F8",
     "separator":   "#E0E2E6",
     # Text
@@ -29,29 +29,29 @@ _C = {
     "text_muted":  "#6B7280",
     "text_header": "#E8E8F0",
     # Accent
-    "accent":      "#0068C9",
+    "accent":      "#097EEB",
     "accent_h":    "#0055A5",   # hover
     "accent_lt":   "#EBF4FF",   # light tint
     # Sidebar selection
     "sel_bg":      "#D6E8FF",
-    "sel_fg":      "#0044AA",
+    "sel_fg":      "#085EDF",
     # Status bar
-    "status_bg":   "#0068C9",
+    "status_bg":   "#375E83",
     "status_fg":   "#FFFFFF",
     # Checkpoint badge
-    "cp_bg":       "#FFF3CD",
-    "cp_fg":       "#7A5000",
-    "cp_border":   "#FFD166",
+    "cp_bg":       "#F5F6F8",
+    "cp_fg":       "#0B4913",
+    "cp_border":   "#0C571F",
     # Change type colours
     "modified":    "#0060BB",
     "created":     "#107C10",
-    "deleted":     "#C42B1C",
-    "moved":       "#B05A00",
+    "deleted":     "#A02E23",
+    "moved":       "#A1761A",
     # Buttons  (bg, fg, hover-bg)
     "btn_primary": ("#0068C9", "#FFFFFF", "#0055A5"),
-    "btn_danger":  ("#C42B1C", "#FFFFFF", "#A02418"),
-    "btn_warn":    ("#B05A00", "#FFFFFF", "#8E4800"),
-    "btn_neutral": ("#EAEAEC", "#1A1A2E", "#D8D8DC"),
+    "btn_danger":  ("#E8FFD6", "#1A1A2E", "#C7DDB6"),
+    "btn_warn":    ("#FFD6D6", "#1A1A2E", "#E2BEBE"),
+    "btn_neutral": ("#EAEAEC", "#1A1A2E", "#F5F5F5"),
     # Row stripes
     "row_even":    "#FFFFFF",
     "row_odd":     "#F6F7F9",
@@ -202,22 +202,22 @@ class MainWindow:
         root = self.root
 
         # ── Header bar ────────────────────────────────────────────────────
-        header = tk.Frame(root, bg=_C["header"], padx=16, pady=10)
-        header.pack(fill=tk.X)
+        # header = tk.Frame(root, bg=_C["header"], padx=16, pady=10)
+        # header.pack(fill=tk.X)
 
-        tk.Label(
-            header, text="PastaMonitor",
-            font=("Segoe UI Semibold", 13),
-            bg=_C["header"], fg=_C["text_header"],
-        ).pack(side=tk.LEFT)
+        # tk.Label(
+        #     header, text="PastaMonitor",
+        #     font=("Segoe UI Semibold", 13),
+        #     bg=_C["header"], fg=_C["text_header"],
+        # ).pack(side=tk.LEFT)
 
-        self._cp_badge = tk.Label(
-            header, text="",
-            font=("Segoe UI", 9, "bold"),
-            bg=_C["cp_bg"], fg=_C["cp_fg"],
-            padx=10, pady=3, relief=tk.FLAT,
-        )
-        self._cp_badge.pack(side=tk.RIGHT, padx=(0, 4))
+        # self._cp_badge = tk.Label(
+        #     header, text="",
+        #     font=("Segoe UI", 9, "bold"),
+        #     bg=_C["cp_bg"], fg=_C["cp_fg"],
+        #     padx=10, pady=3, relief=tk.FLAT,
+        # )
+        # self._cp_badge.pack(side=tk.RIGHT, padx=(0, 4))
 
         # ── Toolbar ───────────────────────────────────────────────────────
         toolbar = tk.Frame(root, bg=_C["toolbar"], padx=10, pady=7)
@@ -230,6 +230,14 @@ class MainWindow:
              self._remove_folder, "neutral").pack(side=tk.LEFT)
 
         # Folder path label (right side of toolbar)
+
+        self._cp_badge = tk.Label(
+            toolbar, text="",
+            font=("Segoe UI", 9, "bold"),
+            bg=_C["cp_bg"], fg=_C["cp_fg"],
+            padx=10, pady=3, relief=tk.FLAT,
+        )
+        self._cp_badge.pack(side=tk.RIGHT, padx=(0, 4))
         self._path_label = tk.Label(
             toolbar, text="", font=("Segoe UI", 8),
             bg=_C["toolbar"], fg=_C["text_muted"], anchor="e",
@@ -317,6 +325,16 @@ class MainWindow:
         self.files_tree.pack(fill=tk.BOTH, expand=True)
         self.files_tree.bind("<Button-3>", self._on_tree_right_click)
         self.files_tree.bind("<Double-1>", self._on_tree_double_click)
+        # ── Status bar ────────────────────────────────────────────────────
+        self._status_var = tk.StringVar(value="Pronto.")
+        status_bar = tk.Label(
+            root,
+            textvariable=self._status_var,
+            bg=_C["status_bg"], fg=_C["status_fg"],
+            font=("Segoe UI", 9),
+            anchor="w", padx=12, pady=4,
+        )
+        status_bar.pack(fill=tk.X, side=tk.BOTTOM)
 
         # ── Action bar ────────────────────────────────────────────────────
         _separator(root, "horizontal").pack(fill=tk.X)
@@ -347,16 +365,6 @@ class MainWindow:
         )
         self.btn_clear.pack(side=tk.RIGHT)
 
-        # ── Status bar ────────────────────────────────────────────────────
-        self._status_var = tk.StringVar(value="Pronto.")
-        status_bar = tk.Label(
-            root,
-            textvariable=self._status_var,
-            bg=_C["status_bg"], fg=_C["status_fg"],
-            font=("Segoe UI", 9),
-            anchor="w", padx=12, pady=4,
-        )
-        status_bar.pack(fill=tk.X, side=tk.BOTTOM)
 
         self._refresh_folder_list()
 
