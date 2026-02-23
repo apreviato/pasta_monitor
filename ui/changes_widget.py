@@ -202,7 +202,7 @@ class ChangeCardWidget(QFrame):
         can_rb   = self._has_checkpoint
 
         # ── Diff ──────────────────────────────────────────────────────────
-        diff_action = menu.addAction("🔍  Ver Diferenças")
+        diff_action = menu.addAction("☷  Ver Diferenças")
         diff_action.setEnabled(can_diff)
         if can_diff:
             diff_action.triggered.connect(

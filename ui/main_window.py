@@ -188,14 +188,15 @@ class _TopBar(QWidget):
 
     # Drag support (clicks not on child widgets propagate here)
     def mousePressEvent(self, event):
-        if event.button() == Qt.MouseButton.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton and not self._window.isMaximized():
             self._drag_pos = (
                 event.globalPosition().toPoint()
                 - self._window.frameGeometry().topLeft()
             )
 
     def mouseMoveEvent(self, event):
-        if self._drag_pos and event.buttons() == Qt.MouseButton.LeftButton:
+        if (self._drag_pos and not self._window.isMaximized()
+                and event.buttons() == Qt.MouseButton.LeftButton):
             self._window.move(
                 event.globalPosition().toPoint() - self._drag_pos
             )
