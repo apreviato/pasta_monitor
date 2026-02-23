@@ -77,7 +77,7 @@ class SystemTray:
             name = Path(folder).name
             monitor = self.app.monitors.get(folder)
             badge = " [CP]" if (monitor and monitor.has_checkpoint) else ""
-            label = f"📁  {name}{badge}"
+            label = f"🗀  {name}{badge}"
             # Capture folder in closure
             items.append(
                 pystray.MenuItem(

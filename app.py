@@ -4,14 +4,10 @@ app.py - Application orchestrator
 
 from __future__ import annotations
 
-import queue
 from pathlib import Path
-from typing import Optional
 
 from config import ConfigManager
 from monitor import FolderMonitor
-from tray import SystemTray
-from ui import MainWindow
 
 
 class PastaMonitorApp:
@@ -20,7 +16,6 @@ class PastaMonitorApp:
     def __init__(self) -> None:
         self.config = ConfigManager()
         self.monitors: dict[str, FolderMonitor] = {}
-        self.tray_q: queue.Queue = queue.Queue()
 
         # Start monitors for previously saved folders
         for folder in list(self.config.folders):
@@ -30,15 +25,9 @@ class PastaMonitorApp:
                 # Folder no longer exists – remove from config silently
                 self.config.remove_folder(folder)
 
-        # Build UI (must happen before tray so we can reference self.window)
+        # Build UI (PyQt6 MainWindow — includes its own system tray)
+        from ui import MainWindow
         self.window = MainWindow(self)
-
-        # Build tray
-        self.tray = SystemTray(self)
-        self.tray.start()
-
-        # Register tray action pump on the tkinter event loop
-        self.window.root.after(100, self._pump_tray_queue)
 
     # ── Monitor management ────────────────────────────────────────────────
 
@@ -66,44 +55,22 @@ class PastaMonitorApp:
         added = self.config.add_folder(norm)
         if added and norm not in self.monitors:
             self._start_monitor(norm)
-        self.tray.update_menu()
+        self.window.update_tray()
         return added
 
     def remove_folder(self, path: str) -> None:
         norm = str(Path(path).resolve())
         self._stop_monitor(norm)
         self.config.remove_folder(norm)
-        self.tray.update_menu()
-
-    # ── Tray → main thread bridge ─────────────────────────────────────────
-
-    def _pump_tray_queue(self) -> None:
-        try:
-            while True:
-                action, data = self.tray_q.get_nowait()
-                self._handle_tray_action(action, data)
-        except queue.Empty:
-            pass
-        self.window.root.after(100, self._pump_tray_queue)
-
-    def _handle_tray_action(self, action: str, data) -> None:
-        if action == "add_folder":
-            self.window.show()
-            self.window._add_folder()
-        elif action == "open_folder":
-            self.window.show(select_folder=data)
-        elif action == "show":
-            self.window.show()
-        elif action == "quit":
-            self._quit()
+        self.window.update_tray()
 
     # ── Lifecycle ─────────────────────────────────────────────────────────
 
     def _quit(self) -> None:
         for monitor in list(self.monitors.values()):
             monitor.stop()
-        self.tray.stop()
-        self.window.root.quit()
+        from PyQt6.QtWidgets import QApplication
+        QApplication.instance().quit()
 
     def run(self) -> None:
-        self.window.run()
+        self.window.show()

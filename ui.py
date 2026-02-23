@@ -342,7 +342,7 @@ class MainWindow:
         action_bar.pack(fill=tk.X, side=tk.BOTTOM)
 
         self.btn_checkpoint = _btn(
-            action_bar, "📸  Criar Checkpoint",
+            action_bar, "✔  Criar Checkpoint",
             self._create_checkpoint, "primary",
         )
         self.btn_checkpoint.pack(side=tk.LEFT, padx=(0, 6))
@@ -381,7 +381,7 @@ class MainWindow:
             name = Path(folder).name
             monitor = self.app.monitors.get(folder)
             has_cp = bool(monitor and monitor.has_checkpoint)
-            label = f"📁  {name}{'  ⚑' if has_cp else ''}"
+            label = f"🗀  {name}{'  ⚑' if has_cp else ''}"
             iid = self.folder_tree.insert("", tk.END, text=label,
                                           values=(folder,), tags=("cp",) if has_cp else ())
 
@@ -530,13 +530,13 @@ class MainWindow:
 
         # ── Copy ──────────────────────────────────────────────────────────
         menu.add_command(
-            label="📋  Copiar caminho relativo",
+            label="⎘  Copiar caminho relativo",
             command=lambda: self._copy(rel_path),
         )
         if self._selected_folder:
             full = str(Path(self._selected_folder) / rel_path)
             menu.add_command(
-                label="📋  Copiar caminho completo",
+                label="⎘  Copiar caminho completo",
                 command=lambda: self._copy(full),
             )
 

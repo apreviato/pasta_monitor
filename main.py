@@ -6,7 +6,7 @@ Uso:
     python main.py
 
 Dependências:
-    pip install watchdog pystray Pillow
+    pip install watchdog PyQt6
 """
 
 import sys
@@ -21,11 +21,11 @@ if _HERE not in sys.path:
 
 def _check_dependencies() -> None:
     missing = []
-    for pkg in ("watchdog", "pystray", "PIL"):
+    for pkg in ("watchdog", "PyQt6"):
         try:
             __import__(pkg)
         except ImportError:
-            missing.append(pkg if pkg != "PIL" else "Pillow")
+            missing.append(pkg)
     if missing:
         print(
             "Dependências faltando. Instale com:\n"
@@ -36,9 +36,19 @@ def _check_dependencies() -> None:
 
 def main() -> None:
     _check_dependencies()
+
+    from PyQt6.QtWidgets import QApplication
+    from ui.styles import STYLESHEET
+
+    qt_app = QApplication(sys.argv)
+    qt_app.setStyleSheet(STYLESHEET)
+    qt_app.setQuitOnLastWindowClosed(False)  # Keep alive when window is hidden to tray
+
     from app import PastaMonitorApp
-    app = PastaMonitorApp()
-    app.run()
+    pasta_app = PastaMonitorApp()
+    pasta_app.run()
+
+    sys.exit(qt_app.exec())
 
 
 if __name__ == "__main__":

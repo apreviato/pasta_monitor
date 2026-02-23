@@ -75,7 +75,7 @@ class DiffViewer(tk.Toplevel):
             font=_FONT_TITLE, bg=_BG_HEADER, fg=_FG_HEADER, anchor="w",
         ).pack(side=tk.LEFT)
 
-        legend = tk.Frame(header, bg=_BG_HEADER)
+        legend = tk.Frame(header, bg=_BG_HEADER, padx=10)
         legend.pack(side=tk.RIGHT)
         tk.Label(legend, text="─ removido ", fg=_FG_REMOVED, bg=_BG_HEADER,
                  font=_FONT_UI).pack(side=tk.LEFT)
